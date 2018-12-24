@@ -1,0 +1,135 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+
+
+public class BeadandoHivasok {
+	
+
+
+	
+    public static void main(String[] args) throws UnsupportedEncodingException, IOException, NoSuchFileException  {
+    	
+    	/**
+    	 * Beadandó feladat
+    	 * @készítette Orbán Ákos
+    	 */
+    	
+    
+    	
+    	double sum = 0;
+	    int mobillal = 0;
+	    int vezetekessel = 0;
+    	BufferedReader br = new BufferedReader(new FileReader("HIVASOK.txt"));
+    	String sor = null;
+
+    	while ((sor = br.readLine()) != null) {
+    	    String[] szam = sor.split(" ");
+    	    /* Hét darab szám kell:
+    	     * Kezdeti óra, perc, másodperc
+    	     */
+    	    
+    	    int kezdetOra = Integer.parseInt(szam[0]);
+    	    int kezdetPerc = Integer.parseInt(szam[1]);
+    	    int kezdetMasodperc = Integer.parseInt(szam[2]);
+    	    
+    	    int vegOra = Integer.parseInt(szam[3]);
+    	    int vegPerc = Integer.parseInt(szam[4]);
+    	    int vegMasodperc = Integer.parseInt(szam[5]);
+    	    
+    	    String telefonSzam = szam[6];
+    	    
+    	    //Műveletek elvégzése az 1. feladathoz
+ 	    
+   
+    	    //Átírja az órát és a percet másodpercbe
+    	    int kezdetMasodpercben = kezdetOra*60*60 + kezdetPerc*60 + kezdetMasodperc;
+    	    int vegMasodpercben = vegOra*60*60 + vegPerc*60 + vegMasodperc;
+    	   
+    	    double idotartam = vegMasodpercben - kezdetMasodpercben; //Megállapítja az időtartamot
+    	    
+    	    double percben = idotartam/60; //Átírja percbe az időtartamot
+
+    	    
+    	    //Létrehoz egy "apercek.txt" nevű fájlt és kiírja a kimenetet a fájlba.
+    	    File fajl = new File("apercek.txt");
+    	    fajl.createNewFile();
+    	    String kiiras = String.format(+(double) Math.round(percben*100)/100+" "+telefonSzam );
+    	    Files.write(Paths.get("apercek.txt"), (kiiras+System.lineSeparator()).getBytes(), StandardOpenOption.APPEND); //(lineSeperatorral külön sorba írja mindet.)
+    	    
+    	    
+    	    // I. FELADAT VÉGE
+    	    
+
+    	    /*
+    	     * 2. Hány percet beszélt mobillal és hányat vezetékessel
+    	     */
+    	    
+ 
+    	    if (szam[6].startsWith("71") || szam[6].startsWith("41") || szam[6].startsWith("39") ) {
+    	    	mobillal += percben;
+    	    }
+    	    else
+    	    {
+    	    	vezetekessel += percben;
+    	    }
+    	    
+ 
+    	    // II. FELADAT VÉGE
+    	        	   
+    	    
+    	    /*
+    	     * 3. CSÚCSIDŐBEN BESZÉLT PERCEK ÖSSZEGE
+    	     */
+    	    	    
+    	    
+    	    // Külön listába rakja a mobilt & vezetékest
+       	    ArrayList<String> mobil = new ArrayList<String>();
+    	    ArrayList<String> vezetekes = new ArrayList<String>();
+    	        
+    	     // Megvizsgálja a két első számot, ha 39 || 41 || 71, akkor a mobil listához adja, ha máshogy kezdődik, akkor a vezetekeshez.
+    	    if (telefonSzam.startsWith("39") || telefonSzam.startsWith("41") || telefonSzam.startsWith("71")  ) 
+    	    {
+    	    	mobil.add(telefonSzam);    	    	
+    	    }
+    	    else 
+    	    {
+    	    	vezetekes.add(telefonSzam);   	    	
+    	    }
+    	    
+    	    
+    	    
+  
+    	    if ((mobil.contains(telefonSzam) && kezdetOra >= 7 && kezdetOra < 18)) //Aa mobil díj kiszámítása a csúcsidőben
+    	    {
+    	    	sum += percben*69; 	    
+    	    }
+    	    else // A vezetékes díj kiszámítása csúcsidőben
+    	    {
+    	    	sum += percben*30;   	    	
+    	    }
+    	    
+    	    // III. feladat vége
+    	}  	   
+    	System.out.println("Mobillal ennyi percet beszélt: "+mobillal);
+    	System.out.println("Vezetékessel ennyi percet beszélt: "+vezetekessel);
+    	System.out.println(); // Üres sor, hogy elkülönítse a két feladatot egymástól	
+    	System.out.println("Csúcsidő díj: " + sum+" Ft");
+
+    	
+	br.close();
+
+
+    }
+	}
+    
+    
+    
+
